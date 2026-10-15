@@ -49,7 +49,13 @@ and `charging` connectors (Malaysia: AC Type 2, DC CCS2).
 - `SCHEMA_VERSION` bumps only for a breaking change. `assertCompatible(meta)` makes an old consumer fail loudly
   instead of misreading newer data.
 - Consumers pin a **tag**, not a commit: `"@luxoticars/catalog": "git+https://github.com/luxoticars/catalog.git#v0.1.0"`.
-  The `prepare` script builds `dist/` on install.
+  The `prepare` script builds `dist/` on install. pnpm 10 skips dependency scripts by default, so each consumer must list
+  the package in `pnpm-workspace.yaml`, or the install leaves no `dist/` and the import fails:
+
+  ```yaml
+  onlyBuiltDependencies:
+    - "@luxoticars/catalog"
+  ```
 
 ## Develop
 
