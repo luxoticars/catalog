@@ -1,6 +1,11 @@
 import { SCHEMA_VERSION } from "./keys.js";
 import type { CarRecord, CatalogMeta, MakesIndexEntry } from "./types.js";
 
+const PROPULSION = ["ice", "hybrid", "phev", "ev"];
+const RANGE_CYCLES = ["WLTP", "NEDC", "CLTC", "EPA", "JC08"];
+const AC_CONNECTORS = ["type2", "type1"];
+const DC_CONNECTORS = ["ccs2", "chademo", "gbt", "nacs"];
+
 export class CatalogFormatError extends Error {
   constructor(message: string) {
     super(message);
@@ -23,6 +28,13 @@ function optNumber(o: Record<string, unknown>, field: string, where: string): vo
   }
 }
 
+function optOneOf(o: Record<string, unknown>, field: string, allowed: string[], where: string): void {
+  const v = o[field];
+  if (v !== undefined && (typeof v !== "string" || !allowed.includes(v))) {
+    throw new CatalogFormatError(`${where}: "${field}" must be one of ${allowed.join(", ")}`);
+  }
+}
+
 /**
  * Checks the fields every consumer depends on and passes everything else
  * through untouched, so a reader on an older package never strips a newer field
@@ -39,6 +51,21 @@ export function parseCarRecord(input: unknown, where = "record"): CarRecord {
   }
   if (!input.make || !input.model) throw new CatalogFormatError(`${where}: "make" and "model" must not be empty`);
   for (const f of ["engineCc", "batteryKwh", "motorKw"]) optNumber(input, f, where);
+  if (input.fuelType !== undefined) str(input, "fuelType", where);
+  optOneOf(input, "propulsion", PROPULSION, where);
+  if (input.range !== undefined) {
+    if (!isObject(input.range)) throw new CatalogFormatError(`${where}: "range" must be an object`);
+    if (typeof input.range.value !== "number" || !Number.isFinite(input.range.value) || input.range.value < 0) {
+      throw new CatalogFormatError(`${where}: "range.value" must be a non-negative number`);
+    }
+    optOneOf({ cycle: input.range.cycle ?? "" }, "cycle", RANGE_CYCLES, `${where}.range`);
+  }
+  if (input.charging !== undefined) {
+    if (!isObject(input.charging)) throw new CatalogFormatError(`${where}: "charging" must be an object`);
+    optOneOf(input.charging, "ac", AC_CONNECTORS, `${where}.charging`);
+    optOneOf(input.charging, "dc", DC_CONNECTORS, `${where}.charging`);
+    optNumber(input.charging, "maxDcKw", `${where}.charging`);
+  }
   return input as unknown as CarRecord;
 }
 

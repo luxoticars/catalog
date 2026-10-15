@@ -35,12 +35,9 @@ export function deriveSpecs(records: readonly CarRecord[], year: number, make: s
   const out: CatalogSpec[] = [];
   for (const r of records) {
     if (r.year !== year || slug(r.make) !== m || slug(r.model) !== md) continue;
-    const key = `${r.transmission}|${r.engine}|${r.variant}`;
-    if (seen.has(key)) continue;
-    seen.add(key);
     const propulsion = r.propulsion ?? propulsionFromFuelType(r.fuelType);
     const engineCc = r.engineCc ?? parseEngineCc(r.engine);
-    out.push({
+    const spec: CatalogSpec = {
       variant: r.variant,
       transmission: r.transmission,
       engine: r.engine,
@@ -54,7 +51,12 @@ export function deriveSpecs(records: readonly CarRecord[], year: number, make: s
       ...(r.motorKw !== undefined && { motorKw: r.motorKw }),
       ...(r.range && { range: r.range }),
       ...(r.charging && { charging: r.charging }),
-    });
+    };
+    // Only exact repeats collapse: rows that differ in drive wheel, assembly, body or powertrain are distinct specs.
+    const key = JSON.stringify(spec);
+    if (seen.has(key)) continue;
+    seen.add(key);
+    out.push(spec);
   }
   return out;
 }

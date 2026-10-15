@@ -55,3 +55,15 @@ describe("makes index", () => {
     expect(makesForYear(index, 1999)).toEqual([]);
   });
 });
+
+describe("deriveSpecs de-duplication", () => {
+  it("collapses exact repeats only", () => {
+    const base = row({ year: 2024, make: "Kia", model: "Sorento", variant: "GT", engine: "2151", transmission: "8 SP", driveWheel: "AWD" });
+    expect(deriveSpecs([base, { ...base }], 2024, "Kia", "Sorento")).toHaveLength(1);
+  });
+  it("keeps rows that differ in drive wheel or assembly", () => {
+    const base = row({ year: 2024, make: "Kia", model: "Sorento", variant: "GT", engine: "2151", transmission: "8 SP", driveWheel: "AWD", assembly: "Local" });
+    const specs = deriveSpecs([base, { ...base, driveWheel: "FWD" }, { ...base, assembly: "Imported" }], 2024, "Kia", "Sorento");
+    expect(specs.map((s) => `${s.driveWheel}/${s.assembly}`)).toEqual(["AWD/Local", "FWD/Local", "AWD/Imported"]);
+  });
+});

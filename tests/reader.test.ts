@@ -51,6 +51,18 @@ describe("parseCarRecord", () => {
     expect(() => parseCarRecord({ ...civic, engineCc: -1 })).toThrow(CatalogFormatError);
     expect(() => parseCarRecord("x")).toThrow(CatalogFormatError);
   });
+  it("validates the powertrain fields it knows", () => {
+    const ok = { ...civic, propulsion: "ev", range: { value: 500, cycle: "WLTP" }, charging: { ac: "type2", dc: "ccs2", maxDcKw: 150 } };
+    expect(() => parseCarRecord(ok)).not.toThrow();
+    expect(() => parseCarRecord({ ...ok, propulsion: "steam" })).toThrow(CatalogFormatError);
+    expect(() => parseCarRecord({ ...ok, range: { value: "500", cycle: "WLTP" } })).toThrow(CatalogFormatError);
+    expect(() => parseCarRecord({ ...ok, range: { value: 500, cycle: "invalid" } })).toThrow(CatalogFormatError);
+    expect(() => parseCarRecord({ ...ok, range: { value: 500 } })).toThrow(CatalogFormatError);
+    expect(() => parseCarRecord({ ...ok, range: 5 })).toThrow(CatalogFormatError);
+    expect(() => parseCarRecord({ ...ok, charging: "ccs2" })).toThrow(CatalogFormatError);
+    expect(() => parseCarRecord({ ...ok, charging: { dc: "usb" } })).toThrow(CatalogFormatError);
+    expect(() => parseCarRecord({ ...ok, fuelType: 7 })).toThrow(CatalogFormatError);
+  });
 });
 
 describe("assertCompatible", () => {
