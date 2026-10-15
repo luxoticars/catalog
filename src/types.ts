@@ -21,7 +21,8 @@ export interface Charging {
 
 /**
  * Powertrain facts shared by a full record and the slice the form reads.
- * Every field is optional so existing rows stay valid; new fields are additive only.
+ * `engine` is required; every other field is optional so existing rows stay valid,
+ * and new fields are additive only.
  */
 export interface Powertrain {
   /** Original free-text engine value as dealers and legacy rows entered it ("1998", "1.5"). */
