@@ -57,6 +57,11 @@ and `charging` connectors (Malaysia: AC Type 2, DC CCS2).
     - "@luxoticars/catalog"
   ```
 
+## Releasing
+
+Add a changeset with your PR (`pnpm changeset`; see `.changeset/README.md`). After merge, the Release workflow opens a
+"version packages" PR; merging it bumps `package.json`, updates `CHANGELOG.md`, tags `vX.Y.Z` and creates a GitHub release.
+
 ## Develop
 
 ```sh
