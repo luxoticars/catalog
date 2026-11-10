@@ -49,24 +49,8 @@ and `charging` connectors (Malaysia: AC Type 2, DC CCS2).
 - `SCHEMA_VERSION` bumps only for a breaking change. `assertCompatible(meta)` makes an old consumer fail loudly
   instead of misreading newer data.
 - Consumers pin a **tag**, not a commit: `"@luxoticars/catalog": "git+https://github.com/luxoticars/catalog.git#v0.1.0"`.
-  The `prepare` script builds `dist/` on install. pnpm skips dependency scripts by default, so each consumer must approve
-  the package in `pnpm-workspace.yaml`, or the install fails with `ERR_PNPM_IGNORED_BUILDS` / leaves no `dist/` and the
-  import fails.
-
-  **Latest stable pnpm (v11+, currently 12.x)** uses `allowBuilds`. For a git-hosted dependency a bare package name is
-  not enough; approve it by repository URL (no `#<tag>` suffix, so tag bumps need no re-approval; the URL must match the
-  one in `package.json` exactly):
-
-  ```yaml
-  allowBuilds:
-    "@luxoticars/catalog@git+https://github.com/luxoticars/catalog.git": true
-  ```
-
-  Alternatively run `pnpm approve-builds` after installing, or `pnpm install --allow-build=@luxoticars/catalog`; both
-  write the entry for you.
-
-  **pnpm 10** (the version this repo pins) still uses the older setting, which `allowBuilds` replaced in v11
-  (`pnpx codemod run pnpm-v10-to-v11` migrates it):
+  The `prepare` script builds `dist/` on install. pnpm 10 skips dependency scripts by default, so each consumer must list
+  the package in `pnpm-workspace.yaml`, or the install leaves no `dist/` and the import fails:
 
   ```yaml
   onlyBuiltDependencies:
