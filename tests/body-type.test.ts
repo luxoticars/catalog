@@ -21,8 +21,8 @@ describe("bodyTypeToCarType", () => {
     expect(bodyTypeToCarType(null)).toBeNull();
   });
   it("never answers a class: that needs a curated carType", () => {
-    for (const body of ["Supercar", "Hypercar", "2D COUPE"]) {
-      expect(["supercar", "hypercar"]).not.toContain(bodyTypeToCarType(body));
+    for (const body of ["Supercar", "Hypercar", "Sportcar", "Sport Touring", "2D COUPE"]) {
+      expect(["sportcar", "sport-touring", "supercar", "hypercar"]).not.toContain(bodyTypeToCarType(body));
     }
   });
 });
@@ -41,6 +41,8 @@ describe("car type vocabulary", () => {
   });
   it("recognises only listed values", () => {
     expect(isCarType("hypercar")).toBe(true);
+    expect(isCarType("sport-touring")).toBe(true);
+    expect(CAR_TYPE_LABELS["sport-touring"]).toBe("Sport Touring (Supercar)");
     expect(isCarType("spaceship")).toBe(false);
     expect(isCarType(undefined)).toBe(false);
   });

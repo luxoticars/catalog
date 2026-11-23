@@ -44,8 +44,8 @@ and `charging` connectors (Malaysia: AC Type 2, DC CCS2).
 
 ## Car types
 
-`CAR_TYPES` is the one `car_type` vocabulary every app stores and validates (body styles plus `supercar` and
-`hypercar`); `CAR_TYPE_LABELS` gives display names. A record may set a curated `carType`; otherwise
+`CAR_TYPES` is the one `car_type` vocabulary every app stores and validates (body styles plus the classes `sportcar`,
+`sport-touring`, `supercar` and `hypercar`); `CAR_TYPE_LABELS` gives display names. A record may set a curated `carType`; otherwise
 `resolveCarType` derives one from the free-form `bodyType` via `bodyTypeToCarType`, which never answers a class.
 New values are additive: a reader that validates `car_type` must accept a value before any writer stores it.
 

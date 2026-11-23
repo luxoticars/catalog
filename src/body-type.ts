@@ -1,6 +1,6 @@
 /**
  * The fixed `car_type` vocabulary every app stores and filters on. One combined field: a body style
- * (coupe, wagon…) or, where it matters more to a buyer, a class (supercar, hypercar).
+ * (coupe, wagon…) or, where it matters more to a buyer, a class (sportcar, sport touring, supercar, hypercar).
  * Additive only: consumers validate against this list, so a value is never renamed or removed.
  */
 export const CAR_TYPES = [
@@ -13,6 +13,8 @@ export const CAR_TYPES = [
   "mpv",
   "pickup",
   "sports",
+  "sportcar",
+  "sport-touring",
   "supercar",
   "hypercar",
   "other",
@@ -30,6 +32,8 @@ export const CAR_TYPE_LABELS: Record<CarType, string> = {
   mpv: "MPV",
   pickup: "Pickup",
   sports: "Sports",
+  sportcar: "Sportcar",
+  "sport-touring": "Sport Touring (Supercar)",
   supercar: "Supercar",
   hypercar: "Hypercar",
   other: "Other",
@@ -43,7 +47,7 @@ const has = (v: string, ...needles: string[]) => needles.some((n) => v.includes(
 
 /**
  * Maps a catalog row's free-form `bodyType` ("MPV", "4D SUV", "2D CABRIO") onto `CarType`.
- * Body style only: it never answers supercar or hypercar. That is the record's curated `carType`.
+ * Body style only: it never answers a class (sportcar, sport-touring, supercar, hypercar). That is the record's curated `carType`.
  */
 export function bodyTypeToCarType(bodyType: string | null | undefined): CarType | null {
   const v = (bodyType ?? "").trim().toLowerCase();
