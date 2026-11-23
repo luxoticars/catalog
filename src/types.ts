@@ -1,3 +1,5 @@
+import type { CarType } from "./body-type.js";
+
 /** What a record describes. Only `car` has data today; the rest reserve key space. */
 export type VehicleKind = "car" | "motorbike" | "scooter" | "boat" | "watch";
 
@@ -50,6 +52,8 @@ export interface CarRecord extends Powertrain {
   variant_facet: string;
   pricing_variant: string;
   bodyType: string;
+  /** Curated car type (e.g. "supercar"). Unset means derive it from `bodyType` (see `resolveCarType`). */
+  carType?: CarType;
   transmission: string;
   driveWheel: string;
   extraInfo: string | null;
@@ -62,6 +66,7 @@ export interface CatalogSpec extends Powertrain {
   driveWheel: string;
   assembly: string;
   bodyType: string;
+  carType?: CarType;
 }
 
 /** One entry of the small per-kind index that answers "which makes have this year". */
