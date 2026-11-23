@@ -1,3 +1,4 @@
+import { CAR_TYPES } from "./body-type.js";
 import { SCHEMA_VERSION } from "./keys.js";
 import type { CarRecord, CatalogMeta, MakesIndexEntry } from "./types.js";
 
@@ -53,6 +54,7 @@ export function parseCarRecord(input: unknown, where = "record"): CarRecord {
   for (const f of ["engineCc", "batteryKwh", "motorKw"]) optNumber(input, f, where);
   if (input.fuelType !== undefined) str(input, "fuelType", where);
   optOneOf(input, "propulsion", PROPULSION, where);
+  optOneOf(input, "carType", [...CAR_TYPES], where);
   if (input.range !== undefined) {
     if (!isObject(input.range)) throw new CatalogFormatError(`${where}: "range" must be an object`);
     if (typeof input.range.value !== "number" || !Number.isFinite(input.range.value) || input.range.value < 0) {

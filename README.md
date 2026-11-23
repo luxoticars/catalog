@@ -42,6 +42,13 @@ Dealers entered engine size as cc (`"1998"`) and litres (`"1.5"`) interchangeabl
 because existing listings store it. EVs use `propulsion: "ev"` with `batteryKwh`, `motorKw`, a `range` that names its test cycle,
 and `charging` connectors (Malaysia: AC Type 2, DC CCS2).
 
+## Car types
+
+`CAR_TYPES` is the one `car_type` vocabulary every app stores and validates (body styles plus `supercar` and
+`hypercar`); `CAR_TYPE_LABELS` gives display names. A record may set a curated `carType`; otherwise
+`resolveCarType` derives one from the free-form `bodyType` via `bodyTypeToCarType`, which never answers a class.
+New values are additive: a reader that validates `car_type` must accept a value before any writer stores it.
+
 ## Compatibility rules
 
 - Changes are **additive**: new optional fields only. A reader ignores fields it does not know, and `parseCarRecord`

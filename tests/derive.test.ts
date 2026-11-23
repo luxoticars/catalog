@@ -36,6 +36,15 @@ describe("derive helpers", () => {
     expect(model3.propulsion).toBe("ev");
     expect(model3.engineCc).toBeUndefined();
   });
+  it("carries a curated carType into specs, and omits it when unset", () => {
+    const rows = [
+      row({ year: 2024, make: "Ferrari", model: "296", variant: "GTB", bodyType: "2D COUPE", carType: "supercar" }),
+      row({ year: 2024, make: "Ferrari", model: "296", variant: "GTS", bodyType: "2D CONVERTIBLE" }),
+    ];
+    const [gtb, gts] = deriveSpecs(rows, 2024, "Ferrari", "296");
+    expect(gtb!.carType).toBe("supercar");
+    expect(gts).not.toHaveProperty("carType");
+  });
   it("returns nothing for unknown combinations", () => {
     expect(deriveModels(records, 2024, "Nope")).toEqual([]);
     expect(deriveSpecs(records, 1990, "Honda", "Civic")).toEqual([]);

@@ -44,6 +44,7 @@ export function deriveSpecs(records: readonly CarRecord[], year: number, make: s
       driveWheel: r.driveWheel,
       assembly: r.assembly,
       bodyType: r.bodyType,
+      ...(r.carType && { carType: r.carType }),
       ...(r.fuelType !== undefined && { fuelType: r.fuelType }),
       ...(propulsion && { propulsion }),
       ...(engineCc && { engineCc }),
