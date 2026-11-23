@@ -18,7 +18,7 @@
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
     "changeset": "changeset",
-    "release": "changeset git-tag"
+    "release": "changeset git-tag && git push origin --tags"
   },
   "devDependencies": {
     "@changesets/cli": "^3.0.3",
